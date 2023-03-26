@@ -1,0 +1,8 @@
+{
+  "engine": "cocos-creator-js",
+  "packages": "packages",
+  "name": "Line_2048_Game",
+  "id": "5d97370e-c602-484b-8c94-d000fbdb578b",
+  "version": "2.4.10",
+  "isNew": false
+}
