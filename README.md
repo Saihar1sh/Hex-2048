@@ -7,3 +7,6 @@
  - Make sure that the target tile should be reachable by number tile.(No obstacles in the way)
  - If the path is not possible, the screen turns red for a short period.
  - If power ups are not available, one can buy it by clicking on the power up and spending coins.
+
+Here is a quick preview of gameplay <br/>
+![](GameplayGif.gif)
