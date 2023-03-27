@@ -1,6 +1,6 @@
 {
   "ver": "2.3.7",
-  "uuid": "00b76f8f-005e-4e1d-bc81-67022a711e4f",
+  "uuid": "4328062f-7731-48b2-a27e-1b6e35a43a59",
   "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
@@ -14,9 +14,9 @@
   "subMetas": {
     "round_videocam_white_48dp": {
       "ver": "1.0.6",
-      "uuid": "32399bd7-3c90-4a7f-a439-27a5d085396d",
+      "uuid": "df453f3e-5c1d-442a-a50f-a7c09fd8161e",
       "importer": "sprite-frame",
-      "rawTextureUuid": "00b76f8f-005e-4e1d-bc81-67022a711e4f",
+      "rawTextureUuid": "4328062f-7731-48b2-a27e-1b6e35a43a59",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,

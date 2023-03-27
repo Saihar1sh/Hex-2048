@@ -27,7 +27,9 @@ export default class NumTileManager extends cc.Component
     
     @property(UndoHandler)
     undoHandler: UndoHandler = null;
-    
+    @property(Player)
+    player: Player = null;
+
     @property(cc.Prefab)
     numTile: cc.Prefab = null;
 
@@ -170,6 +172,15 @@ export default class NumTileManager extends cc.Component
         console.log(numData);
         numTile.Init_NumData(numData);
         numTile.StartSelectTween();
+        this.updatePlayerInfo(numData);
+    }
+
+    private updatePlayerInfo(numData: NumTileData)
+    {
+        this.player.UpdateScore(numData.value);
+        if (Utils.getRandomNum(0, 1) < 0.3) {
+            this.player.CoinsIncreament();
+        }
     }
 
     predictNextTiles()

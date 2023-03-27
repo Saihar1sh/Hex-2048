@@ -24,7 +24,7 @@ export default class Player extends cc.Component
         this.scoreLabel.string = this.score.toString();
     }
 
-    private coins: number;
+    private coins: number = 0;
     set Coins(value:number)
     {
         this.coins = value;
@@ -48,19 +48,19 @@ export default class Player extends cc.Component
     onLoad()
     {
         Player.Instance = this;
-        this.Hi_Score = 90;
     }
     start()
     {
         EventsHandler.Instance.addSubscribers(EventTypes.NewGame,()=>this.newGame());
-        this.UpdateScore(65);
-        this.UpdateScore(35);
     }
 
     UpdateScore(value:number)
     {
         this.Score = value;
         this.Hi_Score = Math.max(this.hiScore,this.score);
+    }
+    CoinsIncreament() {
+        this.Coins = this.coins + 1;
     }
 
     assignTargetNode(_hexTile:HexTile)
@@ -119,6 +119,8 @@ export default class Player extends cc.Component
     {
         this.moves = 0;
         this.destNodes = [];
+        this.score = 0;
+        this.Score = 0;
     }
 
 }

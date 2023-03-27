@@ -1,6 +1,6 @@
 {
   "ver": "2.3.7",
-  "uuid": "c5b8d680-0127-44a9-a3d0-65e546da35ce",
+  "uuid": "b2f2416e-f09e-42bd-acb9-92238024d966",
   "importer": "texture",
   "type": "sprite",
   "wrapMode": "clamp",
@@ -14,9 +14,9 @@
   "subMetas": {
     "videocam": {
       "ver": "1.0.6",
-      "uuid": "bd35d73f-9919-47d9-9237-dd2fb1c0cbc6",
+      "uuid": "55263f0a-2f3e-4735-bb41-7b39401239e1",
       "importer": "sprite-frame",
-      "rawTextureUuid": "c5b8d680-0127-44a9-a3d0-65e546da35ce",
+      "rawTextureUuid": "b2f2416e-f09e-42bd-acb9-92238024d966",
       "trimType": "auto",
       "trimThreshold": 1,
       "rotated": false,
