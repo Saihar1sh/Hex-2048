@@ -90,7 +90,7 @@ export default class NumTile extends cc.Component {
         
     }
 
-    Init_NumData(numTileData: NumTileData,tileValueAboveLimit?:number)
+    Init_NumData(numTileData: NumTileData) 
     {
         if (!numTileData)
         return;
@@ -98,9 +98,5 @@ export default class NumTile extends cc.Component {
         this.Value = numTileData.value;
         this.node.color = numTileData.color;
 
-        if (numTileData.value == 2048 && tileValueAboveLimit > 2048)
-        {
-            this.Value = tileValueAboveLimit;
-        }
     }
 }

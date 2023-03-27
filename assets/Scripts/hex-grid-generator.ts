@@ -2,6 +2,7 @@ import EventsHandler, { EventTypes } from "./events-handler";
 import HexTile from "./hex-tile";
 import NumTile from "./num-tile";
 import NumTileManager from "./num-tile-generator";
+import PathFinding from "./pathfinding";
 import Player from "./player";
 import UndoHandler from "./PowerUps/undo-handler";
 import Utils from "./utils";
@@ -121,12 +122,8 @@ export default class HexManager extends cc.Component
             {
                 this.currentSelectedHexTile.neighbours.forEach(tile=> 
                 {
-                    if (tile.occupied)
-                    {
-                        this.DisableNumTileAndRemoveOccupied(tile);
-                        console.log("inde: "+tile.index)
-
-                    }
+                    this.DisableNumTileAndRemoveOccupied(tile);
+                    console.log("inde: "+tile.index)
                 });
                 this.DisableNumTileAndRemoveOccupied(this.currentSelectedHexTile);
                 this.canBombPower = false;
@@ -173,6 +170,7 @@ export default class HexManager extends cc.Component
 
             this.AddMovesToUndoStack();
             
+            //this.CheckGameoverCondition();
         }, 250);
     }
 
@@ -208,28 +206,35 @@ export default class HexManager extends cc.Component
         return randomHex;
     }
 
-    CheckingMergeIfPossible() {
+    CheckingMergeIfPossible()
+    {
         this.hexTilesProcessed = [];
 
         this.merged = 0;
         console.log("started ")
-        this.hexTilesToCheck.forEach((item) => {
-            if (item.occupied) {
+        this.hexTilesToCheck.forEach((item)=>
+        {
+            if(item.occupied)
+            {
                 let mergable: HexTile[] = [];
                 this.CheckNeighbours(item, mergable);
-
-                if (mergable.length >= 3) {
+                
+                if(mergable.length>=3)
+                {
                     mergable.push(item);
                     this.MergeTiles(mergable);
                     this.merged++;
                 }
-                console.log("-~ " + item.name);
+                console.log("-~ "+item.name);
 
+                mergable.forEach(mergableItem=>
+                {
+
+                });
             }
         });
 
-        setTimeout(() => this.CheckGameoverCondition(), 500);
-
+        this.CheckGameoverCondition();
         this.hexTilesToCheck = [];
     }
 
@@ -278,22 +283,16 @@ export default class HexManager extends cc.Component
     MergeTiles(mergable:HexTile[])
     {
         let mergeToNode = mergable[mergable.length-1];  //tiles will be merged to this tile
-        this.numTileManager.SetMergedTileValue(mergeToNode);
+        this.numTileManager.upgradeTileValue(mergeToNode);
         let mergeTransitonTime = 0.5;
         for (let index = 0; index < mergable.length-1; index++) 
         {
-            //merge tween
             this.numTileManager.NumTileReuseFromPool(mergable[index].occupiedTile);
-
-            let currentNumTile = mergable[index].occupiedTile;
-
-            let targetTile: HexTile = null;
-            let dist: number = 10;
-
-
-            setTimeout(() =>
+            let startNode = mergable[index];
+            let startNumTile = mergable[index].occupiedTile;
+            setTimeout(() => 
             {
-                this.DisableNumTileAndRemoveOccupied(mergable[index]);
+                this.DisableNumTileAndRemoveOccupied(startNode);
                 
             }, mergeTransitonTime*1000);
             if(index == mergable.length-2)
@@ -306,8 +305,6 @@ export default class HexManager extends cc.Component
             
             this.hexTilesToCheck.push(mergeToNode);
             this.CheckingMergeIfPossible();
-
-            this.CheckGameoverCondition();
         }, mergeTransitonTime*1000);
     }
 
@@ -331,37 +328,32 @@ export default class HexManager extends cc.Component
     {
         if(path.length>0)
         {
-            let traversalIndex = path.length-1;
+            let q = path.length-1;
             let parentPos = startNode.node.position;
             let numTile: NumTile = startNode.occupiedTile;
 
-            numTile.node.setParent(path[traversalIndex].node.parent);
+            numTile.node.setParent(path[q].node.parent);
             numTile.node.setPosition(parentPos);
             numTile.node.scale = 0.6;
             let traversalTime = 0.1; //0.5/ path.length;    //According to documentation total traversal time should be 0.5. So, I was using this but it felt too sluggish. So, made it a bit fast. 
             let scheduleRoute = this.schedule(()=> 
             {
-                let targetPosition= path[traversalIndex].node.position;
-                let tween = this.NumTileNodeTween(numTile, traversalTime, targetPosition);
-                console.log("q--"+traversalIndex+" parent:"+path[traversalIndex].node.position+" scale"+path[traversalIndex].node.scale)
-                if(traversalIndex==0)
+                let posA= path[q].node.position;
+                let tween = cc.tween(numTile.node).to(traversalTime,{ position: posA},{easing: 'linear'}).start();
+                console.log("q--"+q+" parent:"+path[q].node.position+" scale"+path[q].node.scale)
+                if(q==0)
                 {
                     startNode.removeOccupiedTile();
                     targetNode.setOccupiedTile(numTile);       //path[0] is final node.
                     console.log("completed traversal")
                     Player.Instance.NextMove();
                 }
-                traversalIndex--;
+                q--;
             } ,traversalTime,path.length-1);
         }
         else
             this.NoPathColorTransition();
 
-    }
-
-    private NumTileNodeTween(numTile: NumTile, traversalTime: number, targetPosition: cc.Vec3): cc.Tween<cc.Node>
-    {
-        return cc.tween(numTile.node).to(traversalTime, { position: targetPosition }, { easing: 'linear' }).start();
     }
 
     newGame()

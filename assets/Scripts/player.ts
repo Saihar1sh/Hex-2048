@@ -20,18 +20,15 @@ export default class Player extends cc.Component
     private score: number = 0;
     set Score(value:number)
     {
-        this.score = value;
+        this.score += value;
         this.scoreLabel.string = this.score.toString();
     }
 
-    private coins: number = 0;
+    private coins: number;
     set Coins(value:number)
     {
         this.coins = value;
-        this.coinsLabel.string = this.coins.toLocaleString('en-US', {
-            minimumIntegerDigits: 2,
-            useGrouping: false
-        })
+        this.coinsLabel.string = this.coins.toString();
     }
 
 
@@ -56,16 +53,14 @@ export default class Player extends cc.Component
     start()
     {
         EventsHandler.Instance.addSubscribers(EventTypes.NewGame,()=>this.newGame());
+        this.UpdateScore(65);
+        this.UpdateScore(35);
     }
 
     UpdateScore(value:number)
     {
-        this.Score = this.score + value;
+        this.Score = value;
         this.Hi_Score = Math.max(this.hiScore,this.score);
-    }
-    UpdateCoins(value:number)
-    {
-        this.Coins = this.coins + value;
     }
 
     assignTargetNode(_hexTile:HexTile)

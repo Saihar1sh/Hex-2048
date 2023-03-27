@@ -4076,13 +4076,9 @@
       "__id__": 81
     },
     "_enabled": true,
-    "_defaultClip": {
-      "__uuid__": "713b0f69-a464-40c0-afb0-4e2f63bae85e"
-    },
+    "_defaultClip": null,
     "_clips": [
-      {
-        "__uuid__": "713b0f69-a464-40c0-afb0-4e2f63bae85e"
-      }
+      null
     ],
     "playOnLoad": true,
     "_id": "81lKqNW1ZFKp/eTC5Dr1E2"
@@ -4092,9 +4088,7 @@
     "root": {
       "__id__": 81
     },
-    "asset": {
-      "__uuid__": "2f7bf3cb-7f64-4c59-9597-79f0936c40f2"
-    },
+    "asset": null,
     "fileId": "6ehOJNE3RBQaIQdQHaAnvg",
     "sync": false
   },
@@ -8536,9 +8530,6 @@
     },
     "numTile": {
       "__uuid__": "14efc369-08e7-4645-8e59-a35cffa89ab3"
-    },
-    "coin": {
-      "__uuid__": "2f7bf3cb-7f64-4c59-9597-79f0936c40f2"
     },
     "predictionTilesNode": {
       "__id__": 12

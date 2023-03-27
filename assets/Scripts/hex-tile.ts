@@ -103,7 +103,6 @@ export default class HexTile extends cc.Component {
         {
             HexManager.Instance.setCurrentSelectedTile(this);
         }
-        console.log("Pressed")
 
         //setting start node and target node (need to change)
         if(Player.Instance.GetDestNodes().length == 0 && this.occupied)

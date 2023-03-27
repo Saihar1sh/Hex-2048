@@ -30,8 +30,6 @@ export default class NumTileManager extends cc.Component
     
     @property(cc.Prefab)
     numTile: cc.Prefab = null;
-    @property(cc.Prefab)
-    coin: cc.Prefab = null;
 
     @property(cc.Node)
     predictionTilesNode: cc.Node = null;
@@ -46,8 +44,6 @@ export default class NumTileManager extends cc.Component
     numTilesData : NumTileData[] = [];          // for easy access from inspector window
 
     numTilesPool: NumTile[] = [];
-
-    coinsPool: cc.Node[] = [];
     
     nextTiles: NumTile[] = [];
     
@@ -65,11 +61,11 @@ export default class NumTileManager extends cc.Component
     start () 
     {
         this.CreateNumTilesPool(50);
-        this.CreateCoinsPool(5);
 
         this.StartGame();
 
         EventsHandler.Instance.addSubscribers(EventTypes.NewGame,()=> this.StartGame());
+        //EventsHandler.Instance.addSubscribers(EventTypes.NextMove,()=> this.SpawnNextTilesWithDelay());
     }
 
     private StartGame() 
@@ -78,9 +74,10 @@ export default class NumTileManager extends cc.Component
         {
             let randTile = this.getRandomHexTile();
             if (randTile)
-                this.InitNumTileFromPool(this.numTilesData[i].value, randTile).node.scale = 1;
+                this.InitNumTileFromPool(this.numTilesData[i].value, randTile);
+
             else
-                console.log("no unoccupied hex tiles left");
+                console.log("no unoccupied hex tiles left"); //as it checks for 60 iterations and we have 30 tiles
         }
         HexManager.Instance.AddMovesToUndoStack();
         this.predictNextTiles();
@@ -104,21 +101,6 @@ export default class NumTileManager extends cc.Component
             numObj.active = false;
             this.numTilesPool.push(numTile);
         }
-    }
-
-    CreateCoinsPool(length: number)
-    {
-        for (let i = 0; i < length; i++)
-        {
-            let coinObj = cc.instantiate(this.coin);
-            coinObj.active = false;
-            this.coinsPool.push(coinObj);
-        }
-    }
-
-    GetCoinFromPool(): cc.Node
-    {
-        return this.coinsPool.find(coinObj => coinObj.active == false);
     }
 
     /**
@@ -181,52 +163,13 @@ export default class NumTileManager extends cc.Component
         }
     }
 
-    SetMergedTileValue(hexTile:HexTile)
+    upgradeTileValue(hexTile:HexTile)
     {
         let numTile = hexTile.occupiedTile;
-        let mergedNumTileValue = cc.misc.clampf(numTile.Value * 4, 4, 2048);
-
-        let numData = this.numTilesDict.get(mergedNumTileValue);
+        let numData = this.numTilesDict.get(numTile.Value*4)
         console.log(numData);
+        numTile.Init_NumData(numData);
         numTile.StartSelectTween();
-
-        numTile.Value * 4 > 2048 ? numTile.Init_NumData(numData, numTile.Value * 4) : numTile.Init_NumData(numData);
-
-        this.MergedTileReward(numTile);
-        Player.Instance.UpdateScore(mergedNumTileValue)
-    }
-
-    MergedTileReward(mergedTile: NumTile)
-    {
-        let probabilityOfGettingCoin = 0;
-        switch (mergedTile.Value)                        //values as given in GDD taking in decimal form. Ex: 20% = 20/100 = 0.2
-        {
-            case 4:   probabilityOfGettingCoin = 0.1;   break;
-            case 8:   probabilityOfGettingCoin = 0.15;  break;
-            case 16:  probabilityOfGettingCoin = 0.2;   break;
-            case 32:  probabilityOfGettingCoin = 0.25;  break;
-            case 64:  probabilityOfGettingCoin = 0.3;   break;
-            case 128: probabilityOfGettingCoin = 0.35;  break;
-            case 256: probabilityOfGettingCoin = 0.4;   break;
-
-            default:
-                if (mergedTile.Value > 256)
-                    probabilityOfGettingCoin = 0.4;
-                break;
-        }
-        let prob = Math.random();
-        console.log("8585 reward- prob: " + probabilityOfGettingCoin+" "+prob);
-        if (prob <= 1)
-        {
-            //reward coin
-            let coinObj = this.GetCoinFromPool();
-            coinObj.setParent(mergedTile.node);
-            coinObj.setPosition(cc.Vec3.ZERO);
-            coinObj.active = true;
-            cc.tween(coinObj).to(1, { y: coinObj.getPosition().y + 120 }).start();
-            setTimeout(() => coinObj.active = false, 1000);
-            Player.Instance.UpdateCoins(1);
-        }
     }
 
     predictNextTiles()
